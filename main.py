@@ -47,7 +47,7 @@ def main():
         print("Debes introducir un usuario.")
         return
 
-    print(f"\n🔎 Buscando información pública sobre: {username}\n")
+    print(f"\nBuscando información pública sobre: {username}\n")
 
     resultados = comprobar_usuario(username)
 

@@ -3,7 +3,7 @@ import requests
 SITIOS = {
     "GitHub": "https://github.com/{}",
     "GitLab": "https://gitlab.com/{}",
-    "Reddit": "https://www.reddit.com/user/{}",
+    "Reddit": "https://www.reddit.com/user/{}/",
 }
 
 
@@ -22,12 +22,16 @@ def comprobar_usuario(username):
                 }
             )
 
-            resultados[sitio] = (
-                respuesta.status_code == 200
-            )
+            resultados[sitio] = {
+                "encontrado": respuesta.status_code == 200,
+                "url": direccion
+            }
 
         except requests.RequestException:
-            resultados[sitio] = False
+            resultados[sitio] = {
+                "encontrado": False,
+                "url": direccion
+            }
 
     return resultados
 
@@ -37,9 +41,9 @@ def main():
     print("       OSINT SECURITY BOT")
     print("=" * 40)
 
-    username = input("\nUsuario a investigar: ")
+    username = input("\nUsuario a investigar: ").strip()
 
-    if not username.strip():
+    if not username:
         print("Debes introducir un usuario.")
         return
 
@@ -47,11 +51,12 @@ def main():
 
     resultados = comprobar_usuario(username)
 
-    for sitio, encontrado in resultados.items():
-        if encontrado:
+    for sitio, datos in resultados.items():
+        if datos["encontrado"]:
             print(f"🟢 {sitio}: encontrado")
+            print(f"   🔗 {datos['url']}\n")
         else:
-            print(f"🔴 {sitio}: no encontrado")
+            print(f"🔴 {sitio}: no encontrado\n")
 
 
 if __name__ == "__main__":
